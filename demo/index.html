@@ -1,0 +1,241 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<title>cxPicker 级联选择器 &raquo; 在线演示 - 前端开发仓库</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+<link rel="stylesheet" href="../css/cxpicker.css">
+<link rel="stylesheet" href="../css/demo.css">
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>cxPicker 级联选择器</h1>
+  </div>
+</header>
+<div class="main">
+  <div class="wrap">
+
+    <h2>示例</h2>
+
+    <fieldset>
+      <legend>单列选择</legend> 
+      <section>
+        <input type="text" id="demo">
+      </section>
+    </fieldset>
+
+    <fieldset>
+      <legend>两列时间选择</legend>
+      <section>
+        <input type="text" id="time" placeholder="选择时间">
+      </section>
+    </fieldset>
+
+    <fieldset>
+      <legend>三列日期选择</legend>
+      <blockquote>年份固定，按月份设置不同的天数</blockquote>
+      <section>
+        <input type="text" id="date" placeholder="选择日期">
+      </section>
+    </fieldset>
+
+    <fieldset>
+      <legend>省市区联动</legend>
+      <section>
+        <input type="text" id="city" placeholder="请选择">
+      </section>
+    </fieldset>
+
+    <div class="about">
+      <section>
+        <h2>文档</h2>
+        <p><a target="_blank" href="https://github.com/ciaoca/cxPicker">Github</a></p>
+      </section>
+      <section>
+        <h2>作者</h2>
+        <p><a target="_blank" href="http://ciaoca.com/">Ciaoca</a></p>
+      </section>
+      <section>
+        <h2>协议</h2>
+        <p>Released under the MIT license</p>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- <script src="//cdn.staticfile.org/jquery/1.7.1/jquery.min.js"></script> -->
+<script src="//cdn.staticfile.org/zepto/1.0/zepto.min.js"></script>
+<script src="../js/cxpicker.js"></script>
+<script>
+(function() {
+  var now = new Date();
+  var year = now.getFullYear();
+  var pickerOptions = {};
+
+  var callback = function(result) {
+    var self = this;
+    var symbol = ' ';
+    console.log(result);
+
+    switch (self.el.id) {
+      case 'time':
+        symbol = ':';
+        break;
+
+      case 'date':
+        symbol = '/';
+        break;
+    };
+
+    self.el.value = result.value.join(symbol);
+    self.el.dataset.value = result.value.join(',');
+  };
+
+
+  // 单列
+  pickerOptions.demo = {
+    data: [[]],
+    value: ['选项 1'],
+    callback: callback
+  };
+
+  for (var i = Math.round(Math.random()*100); i >= 0; i--) {
+    pickerOptions.demo.data[0].unshift('选项 '+i);
+  };
+
+
+  // 时间选择
+  pickerOptions.time = {
+    data: [[],[]],
+    value: [8, 23],
+    callback: callback
+  };
+
+  for (var i = 23; i >= 0; i--) {
+    pickerOptions.time.data[0].unshift({
+      n: i + ' 时',
+      v: i
+    });
+  };
+
+  for (var i = 59; i >= 0; i--) {
+    pickerOptions.time.data[1].unshift({
+      n: i + ' 分',
+      v: i
+    });
+  };
+
+
+  // 日期选择
+  pickerOptions.date = {
+    data: [[],[]],
+    value: [year, now.getMonth() + 1, now.getDate()],
+    selectLength: 3,
+    callback: callback
+  };
+
+  for (var i = year; i >= 2000; i--) {
+    pickerOptions.date.data[0].unshift({
+      n: i + ' 年',
+      v: i
+    });
+  };
+
+  var monthItem;
+  var monthMaxDay;
+
+  for (var i = 12; i >= 1; i--) {
+    monthItem = {
+      n: i + ' 月',
+      v: i,
+      s: []
+    };
+
+    switch (i) {
+      case 2:
+        monthMaxDay = ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0) ? 29 : 28;
+        break;
+
+      case 4:
+      case 6:
+      case 9:
+      case 11:
+        monthMaxDay = 30;
+        break;
+
+      default:
+        monthMaxDay = 31;
+        break;
+    };
+
+    for (var j = monthMaxDay; j >= 1; j--) {
+      monthItem.s.unshift({
+        n: j + ' 日',
+        v: j
+      });
+    };
+
+    pickerOptions.date.data[1].unshift(monthItem);
+  };
+
+
+  // 省市区
+  pickerOptions.city = {
+    data: [
+      [
+        {n: '北京', v: '北京'},
+        {n: '上海', v: '上海', s: [
+          {n: '黄浦区', v: '黄浦区'},
+          {n: '徐汇区', v: '徐汇区'},
+          {n: '长宁区', v: '长宁区'},
+          {n: '静安区', v: '静安区'},
+          {n: '浦东新区', v: '浦东新区'},
+        ]},
+        {n: '浙江', v: '浙江', s: [
+          {n: '杭州', v: '杭州', s: [
+            {n: '上城区', v: '上城区'},
+            {n: '西湖区', v: '西湖区'},
+            {n: '余杭区', v: '余杭区'},
+          ]},
+          {n: '宁波', v: '宁波', s: [
+            {n: '海曙区', v: '海曙区'},
+            {n: '江北区', v: '江北区'},
+            {n: '北仑区', v: '北仑区'},
+          ]}
+        ]}
+      ]
+    ],
+    // value: ['选项 1']
+    selectLength: 3,
+    callback: callback
+  };
+
+
+  $('body').on('click', 'input', function(event) {
+    var self = this;
+    var id = self.id;
+
+    if (id && pickerOptions[id]) {
+      if (!pickerOptions[id].el) {
+        pickerOptions[id].el = self;
+      };
+
+      if (self.dataset.value) {
+        pickerOptions[id].value = self.dataset.value.split(',');
+      };
+
+      if (Array.isArray(pickerOptions[id].value) && ['time','date'].indexOf(id) >= 0) {
+        for (var i = 0; i < pickerOptions[id].value.length; i++) {
+          pickerOptions[id].value[i] = parseInt(pickerOptions[id].value[i], 10);
+        };
+      };
+
+      // console.log(pickerOptions[id]);
+      cxPicker(pickerOptions[id]);
+    };
+  });
+})();
+</script>
+</body>
+</html>

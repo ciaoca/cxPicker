@@ -1,0 +1,92 @@
+/**
+ * cxPicker
+ * ------------------------------ */
+.cxpicker{overflow:hidden;position:fixed;z-index:10001;top:-100%;bottom:100%;left:0;right:0;color:#333;font-size:14px;
+--cxpicker-length:7; /* 需设为奇数 */
+--cxpicker-item-height:32px;
+}
+
+.cxpicker .mask{position:absolute;top:0;bottom:0;left:0;right:0;background-color:rgba(0,0,0,0);cursor:default;
+transition-property:background-color;
+transition-duration:0.3s;
+}
+
+.cxpicker .box{position:absolute;bottom:0;left:0;right:0;border-top:1px solid #95979a;background-color:rgba(213,215,220,1);
+/*box-shadow:0 1px 3px rgba(0,0,0,0.3);*/
+}
+
+.cxpicker .acts{position:relative;background-color:#f0f1f2;line-height:44px;
+display:flex;
+justify-content:space-between;
+}
+.cxpicker .acts a{padding:0 1em;}
+.cxpicker .acts .cancel:before{content:'取消';}
+.cxpicker .acts .set:before{content:'确定';}
+
+.cxpicker .list{position:relative;height:calc(var(--cxpicker-length) * var(--cxpicker-item-height));padding:0 1em;line-height:32px;
+display:flex;
+}
+.cxpicker .list:before,
+.cxpicker .list:after{content:'';position:absolute;top:0;bottom:0;left:0;right:0;border:0 solid rgba(0,0,0,0.1);pointer-events:none;z-index:2;}
+.cxpicker .list:before{bottom:50%;margin-bottom:16px;
+background:linear-gradient(to bottom, rgba(213,215,220,1) 20%, rgba(213,215,220,0) 100%);
+}
+.cxpicker .list:after{top:50%;margin-top:16px;
+background:linear-gradient(to bottom, rgba(213,215,220,0) 0%, rgba(213,215,220,1) 80%);
+}
+
+.cxpicker .list section{position:relative;min-width:0;height:inherit;
+flex:1;
+}
+.cxpicker .list section:before{content:'';position:absolute;top:50%;left:0;right:0;height:32px;margin-top:-16px;border-radius:5px;background-color:rgba(0,0,0,0.1);}
+.cxpicker .list section + section{margin-left:1em;}
+
+.cxpicker .list ul{overflow:hidden;overflow-y:auto;position:relative;height:inherit;margin:0;padding:0;list-style:none;text-align:center;
+scroll-snap-type:y;
+overscroll-behavior:contain;
+-webkit-overflow-scrolling:touch;
+}
+.cxpicker .list ul:before,
+.cxpicker .list ul:after{content:'';display:block;height:calc((var(--cxpicker-length) - 1) / 2 * var(--cxpicker-item-height));}
+.cxpicker .list ul::-webkit-scrollbar{
+display:none;
+}
+
+.cxpicker .list li{position:relative;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+scroll-snap-align:center;
+}
+
+@keyframes cxPickerIn{
+0%{opacity:0;
+transform:translate(0,100%);
+}
+100%{opacity:1;
+transform:translate(0,0);
+}
+}
+
+@keyframes cxPickerOut{
+0%{opacity:1;
+transform:translate(0,0);
+}
+100%{opacity:0;
+transform:translate(0,100%);
+}
+}
+
+/* 显示 */
+.cxpicker.in{top:0;bottom:0;}
+.cxpicker.in .mask{background-color:rgba(0,0,0,0.4);}
+.cxpicker.in .box{
+animation:cxPickerIn 0.3s both;
+}
+
+/* 隐藏 */
+.cxpicker.out{
+transition-property:top, bottom;
+transition-duration:0s;
+transition-delay:0.3s;
+}
+.cxpicker.out .box{
+animation:cxPickerOut 0.3s both;
+}
