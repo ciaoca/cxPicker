@@ -28,7 +28,7 @@ Demo: https://ciaoca.github.io/cxPicker/
 <script src="cxpicker.js"></script>
 ```
 
-### 调用 cxCalendar
+### 调用 cxPicker
 
 ```javascript
 // 设置数据并显示选择器
