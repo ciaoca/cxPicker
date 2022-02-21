@@ -32,17 +32,21 @@
 
     self.dom.list = self.dom.wrap.querySelector('.list');
 
-    self.dom.list.addEventListener('touchend', function() {
-      self.checkStable();
-    });
-
-    self.dom.list.addEventListener('mousewheel', function() {
-      clearTimeout(self.scrollThrottle);
-
-      self.scrollThrottle = setTimeout(function() {
+    if('ontouchend' in document.documentElement){
+      self.dom.list.addEventListener('touchend', function() {
         self.checkStable();
-      }, 200);
-    });
+      });
+
+    } else {
+      self.loopTime = 500;
+      self.dom.list.addEventListener('mousewheel', function() {
+        clearTimeout(self.scrollThrottle);
+
+        self.scrollThrottle = setTimeout(function() {
+          self.checkStable();
+        }, self.loopTime);
+      });
+    };
 
     self.dom.wrap.addEventListener('click', function() {
       var target = event.target;
@@ -253,7 +257,7 @@
       self.checkLoop = setTimeout(function() {
         self.checkLock = false;
         self.checkStable();
-      }, 200);
+      }, self.loopTime);
       return;
     };
 
