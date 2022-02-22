@@ -240,7 +240,7 @@
   picker.checkStable = function(isForce) {
     var self = this;
     var group = self.dom.list.getElementsByTagName('ul');
-    var result = true;
+    var pass = true;
 
     if (isForce) {
       self.checkLock = false;
@@ -256,17 +256,17 @@
       if (self.cacheResult[i].top !== group[i].scrollTop) {
         if (self.cacheResult[i].top > group[i].scrollTop) {
           self.cacheResult[i].index = Math.ceil(group[i].scrollTop / self.itemHeight);
-        } else if (true) {
+        } else {
           self.cacheResult[i].index = Math.floor(group[i].scrollTop / self.itemHeight);
         };
 
         self.cacheResult[i].top = group[i].scrollTop;
-        result = false;
+        pass = false;
         break;
       };
     };
 
-    if (!result && !isForce) {
+    if (!pass && !isForce) {
       self.checkLock = true;
       self.checkLoop = setTimeout(function() {
         self.checkLock = false;
