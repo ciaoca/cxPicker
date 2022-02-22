@@ -1,8 +1,7 @@
 /*!
  * cxPicker
- * @name cxpicker.js
+ * 
  * @version 1.0.0
- * @date 2022-02-21
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxPicker
@@ -38,7 +37,6 @@
       });
 
     } else {
-      self.loopTime = 500;
       self.dom.list.addEventListener('mousewheel', function() {
         clearTimeout(self.scrollThrottle);
 
@@ -82,7 +80,12 @@
 
   picker.setOptions = function(options) {
     var self = this;
+
     self.options = Object.assign({}, cxPicker.defaults, options);
+
+    if (typeof self.options.jsonValue !== 'string' || !self.options.jsonValue.length) {
+      self.options.jsonValue = self.options.jsonName;
+    };
   };
 
   picker.attach = function(options) {
@@ -225,6 +228,8 @@
   picker.confirm = function() {
     var self = this;
 
+    self.checkStable(true);
+
     if (typeof self.options.callback === 'function') {
       self.options.callback(self.getResult());
     };
@@ -232,10 +237,14 @@
     self.hide();
   };
 
-  picker.checkStable = function() {
+  picker.checkStable = function(isForce) {
     var self = this;
     var group = self.dom.list.getElementsByTagName('ul');
     var result = true;
+
+    if (isForce) {
+      self.checkLock = false;
+    };
 
     if (self.checkLock) {
       return;
@@ -245,14 +254,19 @@
 
     for (var i = 0, l = group.length; i < l; i++) {
       if (self.cacheResult[i].top !== group[i].scrollTop) {
+        if (self.cacheResult[i].top > group[i].scrollTop) {
+          self.cacheResult[i].index = Math.ceil(group[i].scrollTop / self.itemHeight);
+        } else if (true) {
+          self.cacheResult[i].index = Math.floor(group[i].scrollTop / self.itemHeight);
+        };
+
         self.cacheResult[i].top = group[i].scrollTop;
-        self.cacheResult[i].index = Math.round(group[i].scrollTop / self.itemHeight);
         result = false;
         break;
       };
     };
 
-    if (!result) {
+    if (!result && !isForce) {
       self.checkLock = true;
       self.checkLoop = setTimeout(function() {
         self.checkLock = false;

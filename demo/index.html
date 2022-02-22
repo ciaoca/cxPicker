@@ -182,34 +182,20 @@
 
   // 省市区
   pickerOptions.city = {
-    data: [
-      [
-        {n: '北京', v: '北京'},
-        {n: '上海', v: '上海', s: [
-          {n: '黄浦区', v: '黄浦区'},
-          {n: '徐汇区', v: '徐汇区'},
-          {n: '长宁区', v: '长宁区'},
-          {n: '静安区', v: '静安区'},
-          {n: '浦东新区', v: '浦东新区'},
-        ]},
-        {n: '浙江', v: '浙江', s: [
-          {n: '杭州', v: '杭州', s: [
-            {n: '上城区', v: '上城区'},
-            {n: '西湖区', v: '西湖区'},
-            {n: '余杭区', v: '余杭区'},
-          ]},
-          {n: '宁波', v: '宁波', s: [
-            {n: '海曙区', v: '海曙区'},
-            {n: '江北区', v: '江北区'},
-            {n: '北仑区', v: '北仑区'},
-          ]}
-        ]}
-      ]
-    ],
-    // value: ['选项 1']
+    data: [],
+    value: ['浙江省', '杭州市', '西湖区'],
     selectLength: 3,
+    jsonValue: 'n',
     callback: callback
   };
+
+  $.ajax({
+    url: '../js/cityData.min.json',
+    dataType: 'json',
+    success: function(data) {
+      pickerOptions.city.data.push(data);
+    }
+  });
 
 
   $('body').on('click', 'input', function(event) {
