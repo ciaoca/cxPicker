@@ -165,7 +165,7 @@ value|array|选中的值列表
 
 ```javascript
 {
-	callback: function(result) {
+  callback: function(result) {
     console.log(result);
     /*
     result = {
@@ -176,4 +176,3 @@ value|array|选中的值列表
   }
 }
 ```
-
