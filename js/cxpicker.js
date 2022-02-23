@@ -104,6 +104,7 @@
 
     self.cacheSelect = [];
     self.cacheResult = [];
+    self.subStart = null;
 
     self.buildSelect();
     self.show();
