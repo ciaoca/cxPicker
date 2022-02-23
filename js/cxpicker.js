@@ -15,7 +15,7 @@
   picker.init = function() {
     var self = this;
 
-    self.loopTime = 200;
+    self.loopTime = 100;
 
     self.dom.wrap = document.createElement('div');
     self.dom.wrap.classList.add('cxpicker');
