@@ -102,7 +102,6 @@
       self.options.selectLength = self.options.data.length;
     };
 
-    self.cacheData = self.options.data;
     self.cacheSelect = [];
     self.cacheResult = [];
 
@@ -120,8 +119,8 @@
     for (var i = 0; i < self.options.selectLength; i++) {
       if (Array.isArray(subData)) {
         curData = subData;
-      } else if (self.cacheData.length - i > 0) {
-        curData = self.cacheData[i];
+      } else if (self.options.data.length - i > 0) {
+        curData = self.options.data[i];
       } else {
         curData = [];
       };
@@ -253,8 +252,8 @@
     clearTimeout(self.checkLoop);
 
     for (var i = 0, l = group.length; i < l; i++) {
-      if (self.cacheResult[i].top !== group[i].scrollTop) {
-        if (self.cacheResult[i].top > group[i].scrollTop) {
+      if (group[i].scrollTop !== self.cacheResult[i].top) {
+        if (group[i].scrollTop > self.cacheResult[i].top) {
           self.cacheResult[i].index = Math.ceil(group[i].scrollTop / self.itemHeight);
         } else {
           self.cacheResult[i].index = Math.floor(group[i].scrollTop / self.itemHeight);
@@ -280,7 +279,9 @@
 
   picker.checkSelect = function() {
     var self = this;
+    var group = self.dom.list.getElementsByTagName('ul');
     var curIndex;
+    var curTop;
     var curValue;
     var curItem;
     var subData;
@@ -291,6 +292,11 @@
       curIndex = self.cacheResult[i].index;
       curValue = self.cacheResult[i].value;
       curItem = self.cacheSelect[i][curIndex];
+      curTop = curIndex * self.itemHeight;
+
+      if (group[i].scrollTop !== curTop) {
+        group[i].scrollTop = curTop;
+      };
 
       if (typeof curItem === 'object') {
         newLabel = curItem[self.options.jsonName];
