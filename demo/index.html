@@ -70,13 +70,13 @@
 <script src="../js/cxpicker.js"></script>
 <script>
 (function() {
-  var now = new Date();
-  var year = now.getFullYear();
-  var pickerOptions = {};
+  const now = new Date();
+  const year = now.getFullYear();
+  const pickerOptions = {};
 
-  var callback = function(result) {
-    var self = this;
-    var symbol = ' ';
+  const callback = function(result) {
+    const self = this;
+    let symbol = ' ';
     console.log(result);
 
     switch (self.el.id) {
@@ -101,7 +101,7 @@
     callback: callback
   };
 
-  for (var i = Math.ceil(Math.random()*99); i >= 0; i--) {
+  for (let i = Math.ceil(Math.random()*99); i >= 0; i--) {
     pickerOptions.demo.data[0].unshift('选项 '+i);
   };
 
@@ -113,14 +113,14 @@
     callback: callback
   };
 
-  for (var i = 23; i >= 0; i--) {
+  for (let i = 23; i >= 0; i--) {
     pickerOptions.time.data[0].unshift({
       n: i + ' 时',
       v: i
     });
   };
 
-  for (var i = 59; i >= 0; i--) {
+  for (let i = 59; i >= 0; i--) {
     pickerOptions.time.data[1].unshift({
       n: i + ' 分',
       v: i
@@ -136,22 +136,20 @@
     callback: callback
   };
 
-  for (var i = year; i >= 2000; i--) {
+  for (let i = year; i >= 2000; i--) {
     pickerOptions.date.data[0].unshift({
       n: i + ' 年',
       v: i
     });
   };
 
-  var monthItem;
-  var monthMaxDay;
-
   for (var i = 12; i >= 1; i--) {
-    monthItem = {
+    const monthItem = {
       n: i + ' 月',
       v: i,
       s: []
     };
+    let monthMaxDay = 31;
 
     switch (i) {
       case 2:
@@ -164,13 +162,9 @@
       case 11:
         monthMaxDay = 30;
         break;
-
-      default:
-        monthMaxDay = 31;
-        break;
     };
 
-    for (var j = monthMaxDay; j >= 1; j--) {
+    for (let j = monthMaxDay; j >= 1; j--) {
       monthItem.s.unshift({
         n: j + ' 日',
         v: j
@@ -200,8 +194,8 @@
 
 
   $('body').on('click', 'input', function(event) {
-    var self = this;
-    var id = self.id;
+    const self = this;
+    const id = self.id;
 
     if (id && pickerOptions[id]) {
       if (!pickerOptions[id].el) {
@@ -213,7 +207,7 @@
       };
 
       if (Array.isArray(pickerOptions[id].value) && ['time','date'].indexOf(id) >= 0) {
-        for (var i = 0; i < pickerOptions[id].value.length; i++) {
+        for (let i = 0; i < pickerOptions[id].value.length; i++) {
           pickerOptions[id].value[i] = parseInt(pickerOptions[id].value[i], 10);
         };
       };

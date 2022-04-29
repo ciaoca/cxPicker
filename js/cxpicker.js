@@ -1,73 +1,70 @@
-/*!
+/**
  * cxPicker
- * 
- * @version 1.0.0
+ * @version 1.0.1
  * @author ciaoca
  * @email ciaoca@gmail.com
  * @site https://github.com/ciaoca/cxPicker
  * @license Released under the MIT license
  */
 (function() {
-  var picker = {
+  const picker = {
     dom: {}
   };
 
   picker.init = function() {
-    var self = this;
+    const self = this;
 
     self.loopTime = 100;
 
     self.dom.wrap = document.createElement('div');
     self.dom.wrap.classList.add('cxpicker');
-    self.dom.wrap.innerHTML = '<div class="mask"></div>'
-      + '<div class="box">'
-        + '<div class="acts">'
-          + '<a class="cancel" href="javascript://" rel="cxpicker_hide"></a>'
-          + '<a class="set" href="javascript://" rel="cxpicker_set"></a>'
-        + '</div>'
-        + '<div class="list"></div>'
-      + '</div>'
-    + '</div>';
+    self.dom.wrap.innerHTML = `<div class="mask"></div>
+      <div class="box">
+        <div class="acts">
+          <a class="cancel" href="javascript://" rel="cxpicker_hide"></a>
+          <a class="set" href="javascript://" rel="cxpicker_set"></a>
+        </div>
+        <div class="list"></div>
+      </div>
+    </div>`;
 
     self.dom.list = self.dom.wrap.querySelector('.list');
 
     if('ontouchend' in document.documentElement){
-      self.dom.list.addEventListener('touchend', function() {
+      self.dom.list.addEventListener('touchend', () => {
         self.checkStable();
       });
 
     } else {
-      self.dom.list.addEventListener('mousewheel', function() {
+      self.dom.list.addEventListener('mousewheel', () => {
         clearTimeout(self.scrollThrottle);
 
-        self.scrollThrottle = setTimeout(function() {
+        self.scrollThrottle = setTimeout(() => {
           self.checkStable();
         }, self.loopTime);
       });
     };
 
-    self.dom.wrap.addEventListener('click', function() {
-      var target = event.target;
-      var tagName = '';
+    self.dom.wrap.addEventListener('click', (e) => {
+      const el = e.target;
+      const nodeName = el.nodeName.toLowerCase();
 
-      if (typeof target.nodeName === 'string') {
-        tagName = target.nodeName.toLowerCase();
-      };
-
-      if (tagName === 'a') {
-        switch (target.rel) {
+      if (nodeName === 'a') {
+        switch (el.rel) {
           case 'cxpicker_hide':
+            event.preventDefault();
             self.hide();
             break;
 
           case 'cxpicker_set':
+            event.preventDefault();
             self.confirm();
             break;
         };
 
-      } else if (tagName === 'div') {
-        for (var i = 0, l = target.classList.length; i < l; i++) {
-          if (target.classList[i] === 'mask') {
+      } else if (nodeName === 'div') {
+        for (let x of el.classList) {
+          if (x === 'mask') {
             self.hide();
             break;
           };
@@ -79,7 +76,7 @@
   };
 
   picker.setOptions = function(options) {
-    var self = this;
+    const self = this;
 
     self.options = Object.assign({}, cxPicker.defaults, options);
 
@@ -89,12 +86,12 @@
   };
 
   picker.attach = function(options) {
-    var self = this;
+    const self = this;
 
     self.setOptions(options);
 
     if (!Array.isArray(self.options.data)) {
-      console.warn('cxPicker: data is not array.')
+      console.warn('[cxPicker] data is not array.')
       return;
     };
 
@@ -111,13 +108,13 @@
   };
 
   picker.buildSelect = function() {
-    var self = this;
-    var curData;
-    var curResult;
-    var subData;
-    var html = '';
+    const self = this;
+    let subData;
+    let html = '';
 
-    for (var i = 0; i < self.options.selectLength; i++) {
+    for (let i = 0; i < self.options.selectLength; i++) {
+      let curData;
+
       if (Array.isArray(subData)) {
         curData = subData;
       } else if (self.options.data.length - i > 0) {
@@ -126,12 +123,12 @@
         curData = [];
       };
 
-      curResult = {
+      const curResult = {
         index: 0
       };
 
       if (curData.length && self.options.value.length - i > 0) {
-        for (var j = 0, k = curData.length; j < k; j++) {
+        for (let j = 0, k = curData.length; j < k; j++) {
           if (curData[j] === self.options.value[i] || (typeof curData[j] === 'object' && curData[j][self.options.jsonValue] === self.options.value[i])) {
             curResult.index = j;
 
@@ -171,35 +168,35 @@
       self.cacheResult.push(curResult);
     };
 
-    for (var i = 0, l = self.cacheSelect.length; i < l; i++) {
-      html += self.createList(self.cacheSelect[i]);
+    for (let x of self.cacheSelect) {
+      html += self.createList(x);
     };
     self.dom.list.innerHTML = html;
 
     // 调整选项定位
-    var group = self.dom.list.getElementsByTagName('ul');
+    const group = self.dom.list.getElementsByTagName('ul');
     self.itemHeight = self.dom.list.getElementsByTagName('li')[0].offsetHeight;
 
-    for (var i = 0, l = self.cacheResult.length; i < l; i++) {
+    for (let i = 0, l = self.cacheResult.length; i < l; i++) {
       self.cacheResult[i].top = self.itemHeight * self.cacheResult[i].index;
       group[i].scrollTop = self.cacheResult[i].top;
     };
   };
 
   picker.createList = function(data) {
-    var self = this;
-    var list = [];
+    const self = this;
+    const list = [];
 
-    for (var i = 0, l = data.length; i < l; i++) {
-      list.push(self.createItem(data[i]));
-    };
+    for (let x of data) {
+      list.push(self.createItem(x));
+    }
 
     return '<section><ul>' + list.join('') + '</ul></section>';
   };
 
   picker.createItem = function(data) {
-    var self = this;
-    var html = '';
+    const self = this;
+    let html = '';
 
     if (typeof data === 'object') {
       html = '<li data-value="' + data[self.options.jsonValue] + '">' + data[self.options.jsonName] + '</li>';
@@ -212,21 +209,21 @@
   };
 
   picker.show = function() {
-    var self = this;
+    const self = this;
 
     self.dom.wrap.classList.remove('out');
     self.dom.wrap.classList.add('in');
   };
 
   picker.hide = function() {
-    var self = this;
+    const self = this;
 
     self.dom.wrap.classList.remove('in');
     self.dom.wrap.classList.add('out');
   };
 
   picker.confirm = function() {
-    var self = this;
+    const self = this;
 
     self.checkStable(true);
 
@@ -238,9 +235,9 @@
   };
 
   picker.checkStable = function(isForce) {
-    var self = this;
-    var group = self.dom.list.getElementsByTagName('ul');
-    var pass = true;
+    const self = this;
+    const group = self.dom.list.getElementsByTagName('ul');
+    let pass = true;
 
     if (isForce) {
       self.checkLock = false;
@@ -252,7 +249,7 @@
 
     clearTimeout(self.checkLoop);
 
-    for (var i = 0, l = group.length; i < l; i++) {
+    for (let i = 0, l = group.length; i < l; i++) {
       if (group[i].scrollTop !== self.cacheResult[i].top) {
         if (group[i].scrollTop > self.cacheResult[i].top) {
           self.cacheResult[i].index = Math.ceil(group[i].scrollTop / self.itemHeight);
@@ -268,7 +265,7 @@
 
     if (!pass && !isForce) {
       self.checkLock = true;
-      self.checkLoop = setTimeout(function() {
+      self.checkLoop = setTimeout(() => {
         self.checkLock = false;
         self.checkStable();
       }, self.loopTime);
@@ -279,21 +276,17 @@
   };
 
   picker.checkSelect = function() {
-    var self = this;
-    var group = self.dom.list.getElementsByTagName('ul');
-    var curIndex;
-    var curTop;
-    var curValue;
-    var curItem;
-    var subData;
-    var newLabel;
-    var newValue;
+    const self = this;
+    const group = self.dom.list.getElementsByTagName('ul');
 
-    for (var i = 0; i < self.options.selectLength; i++) {
-      curIndex = self.cacheResult[i].index;
-      curValue = self.cacheResult[i].value;
-      curItem = self.cacheSelect[i][curIndex];
-      curTop = curIndex * self.itemHeight;
+    for (let i = 0; i < self.options.selectLength; i++) {
+      const curIndex = self.cacheResult[i].index;
+      const curValue = self.cacheResult[i].value;
+      const curItem = self.cacheSelect[i][curIndex];
+      const curTop = curIndex * self.itemHeight;
+      let subData;
+      let newLabel;
+      let newValue;
 
       if (group[i].scrollTop !== curTop) {
         group[i].scrollTop = curTop;
@@ -332,11 +325,10 @@
   };
 
   picker.clearSelect = function(index) {
-    var self = this;
-    var curData;
-    var curResult;
-    var start = index + 1;
-    var group = self.dom.list.getElementsByTagName('section');
+    const self = this;
+    const group = self.dom.list.getElementsByTagName('section');
+    const start = index + 1;
+    let curData;
 
     if (Array.isArray(self.cacheSelect[index][self.cacheResult[index].index][self.options.jsonSub])) {
       curData = self.cacheSelect[index][self.cacheResult[index].index][self.options.jsonSub];
@@ -345,12 +337,12 @@
     self.cacheSelect.splice(start, self.options.selectLength - index);
     self.cacheResult.splice(start, self.options.selectLength - index);
 
-    for (var i = start; i < self.options.selectLength; i++) {
+    for (let i = start; i < self.options.selectLength; i++) {
       if (!Array.isArray(curData)) {
         curData = [];
       };
 
-      curResult = {
+      const curResult = {
         index: 0
       };
 
@@ -377,26 +369,26 @@
   };
 
   picker.getResult = function() {
-    var self = this;
-    var result = {
+    const self = this;
+    const result = {
       label: [],
       value: []
     };
 
-    for (var i = 0; i < self.cacheResult.length; i++) {
-      if (typeof self.cacheResult[i] === 'object' && typeof self.cacheResult[i].value === 'undefined') {
+    for (let x of self.cacheResult) {
+      if (typeof x === 'object' && typeof x.value === 'undefined') {
         break;
       };
 
-      result.label.push(self.cacheResult[i].label);
-      result.value.push(self.cacheResult[i].value);
+      result.label.push(x.label);
+      result.value.push(x.value);
     };
 
     return result;
   };
 
 
-  var cxPicker = function() {
+  const cxPicker = function() {
     return cxPicker.attach.apply(cxPicker, arguments);
   };
 
@@ -412,7 +404,7 @@
     jsonSub: 's',
   };
 
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', () => {
     picker.init();
   });
 
